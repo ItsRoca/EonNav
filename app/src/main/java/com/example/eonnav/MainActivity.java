@@ -1,19 +1,21 @@
 package com.example.eonnav;
 
 import android.os.Bundle;
-import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import org.json.JSONObject;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,28 +26,36 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        TextView textView = findViewById(R.id.textView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://pokeapi.co/api/v2/pokemon/pikachu";
+        String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
                         JSONObject json = new JSONObject(response);
-                        String name = json.getString("name");
+                        JSONArray results = json.getJSONArray("results");
 
-                        textView.setText(name);
+                        List<String> names = new ArrayList<>();
+
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject pokemon = results.getJSONObject(i);
+                            names.add(pokemon.getString("name"));
+                        }
+
+                        PokemonAdapter adapter = new PokemonAdapter(this, names);
+                        recyclerView.setAdapter(adapter);
 
                     } catch (JSONException e) {
-                        textView.setText("Error parsing");
+                        e.printStackTrace();
                     }
                 },
                 error -> {
-                    textView.setText("Error");
+                    error.printStackTrace();
                 });
 
         queue.add(request);
-
     }
 }
