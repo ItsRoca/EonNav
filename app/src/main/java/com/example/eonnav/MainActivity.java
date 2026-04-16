@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025";
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
