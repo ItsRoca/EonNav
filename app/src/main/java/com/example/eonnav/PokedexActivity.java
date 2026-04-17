@@ -1,5 +1,6 @@
 package com.example.eonnav;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +30,29 @@ public class PokedexActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pokedex);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setItemIconTintList(null);
+        bottomNav.setItemTextColor(null);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            if (item.getItemId() == R.id.nav_home) {
+                return true;
+            }
+
+            if (item.getItemId() == R.id.nav_pokedex) {
+                startActivity(new Intent(this, PokedexActivity.class));
+                return true;
+            }
+
+            if (item.getItemId() == R.id.nav_favorites) {
+                // futura pantalla de favoritos
+                return true;
+            }
+
+            return false;
+        });
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));

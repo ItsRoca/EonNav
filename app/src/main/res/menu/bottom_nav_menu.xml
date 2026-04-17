@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_pokedex"
+        android:title="Pokedex"
+        android:icon="@drawable/icon_pokedex"/>
+
+    <item
+        android:id="@+id/nav_home"
+        android:title="Inicio"
+        android:icon="@drawable/icon_pokeball"/>
+
+    <item
+        android:id="@+id/nav_favorites"
+        android:title="Favoritos"
+        android:icon="@drawable/filled_star"/>
+
+</menu>
