@@ -1,8 +1,12 @@
 package com.example.eonnav;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,11 +30,14 @@ public class PokedexActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pokedex);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
         //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
+
+        EditText searchBar = findViewById(R.id.searchBar);
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
         response -> {
@@ -47,6 +54,19 @@ public class PokedexActivity extends AppCompatActivity {
 
                 PokemonAdapter adapter = new PokemonAdapter(this, names);
                 recyclerView.setAdapter(adapter);
+
+                searchBar.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        adapter.filter(s.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();

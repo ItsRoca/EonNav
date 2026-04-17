@@ -5,15 +5,19 @@ import android.content.Intent;
 import android.view.*;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHolder> {
 
-    private List<String> pokemonList;
+    List<String> pokemonList;
+    List<String> pokemonListFull;
     private Context context;
-    public PokemonAdapter(Context context, List<String> pokemonList) {
+    public PokemonAdapter(Context context, List<String> names) {
         this.context = context;
-        this.pokemonList = pokemonList;
+        this.pokemonList = new ArrayList<>(names);
+        this.pokemonListFull = new ArrayList<>(names);
     }
 
     @Override
@@ -46,5 +50,22 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             super(itemView);
             textView = itemView.findViewById(android.R.id.text1);
         }
+    }
+
+    public void filter(String text) {
+        pokemonList.clear();
+
+        if (text.isEmpty()) {
+            pokemonList.addAll(pokemonListFull);
+        } else {
+            text = text.toLowerCase();
+            for (String name : pokemonListFull) {
+                if (name.toLowerCase().contains(text)) {
+                    pokemonList.add(name);
+                }
+            }
+        }
+
+        notifyDataSetChanged();
     }
 }

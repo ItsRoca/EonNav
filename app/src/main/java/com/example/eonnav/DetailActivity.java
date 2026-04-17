@@ -59,7 +59,10 @@ public class DetailActivity extends AppCompatActivity {
                         text.setText(nombre + "\nAltura: " + heightMeters + " m");
 
                         JSONObject sprites = json.getJSONObject("sprites");
-                        String imageUrl = sprites.getString("front_default");
+                        String imageUrl = sprites
+                                .getJSONObject("other")
+                                .getJSONObject("official-artwork")
+                                .getString("front_default");
 
                         Picasso.get().load(imageUrl).into(image);
 
