@@ -1,8 +1,11 @@
 package com.example.eonnav;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,6 +36,16 @@ public class DetailActivity extends AppCompatActivity {
         TextView text = findViewById(R.id.textDetail);
         text.setText(name);
 
+        ImageView buttonFav = findViewById(R.id.buttonFav);
+        SharedPreferences prefs = getSharedPreferences("favorites", MODE_PRIVATE);
+        boolean isFav = prefs.getBoolean(name, false);
+        if (isFav) {
+            buttonFav.setImageResource(R.drawable.filled_star);
+        } else {
+            buttonFav.setImageResource(R.drawable.empty_star);
+        }
+
+
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
@@ -59,6 +72,27 @@ public class DetailActivity extends AppCompatActivity {
                 });
 
         queue.add(request);
+
+        buttonFav.setOnClickListener(v -> {
+
+            SharedPreferences.Editor editor = prefs.edit();
+            boolean favorito = prefs.getBoolean(name, false);
+
+            String nombre = name;
+            nombre = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
+
+            if (favorito) {
+                editor.remove(name);
+                buttonFav.setImageResource(R.drawable.empty_star);
+                Toast.makeText(this, nombre + " eliminado de favoritos", Toast.LENGTH_SHORT).show();
+            } else {
+                editor.putBoolean(name, true);
+                buttonFav.setImageResource(R.drawable.filled_star);
+                Toast.makeText(this, nombre + " añadido a favoritos", Toast.LENGTH_SHORT).show();
+            }
+
+            editor.apply();
+        });
 
 
     }

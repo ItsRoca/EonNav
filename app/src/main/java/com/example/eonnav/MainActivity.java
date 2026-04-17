@@ -1,22 +1,11 @@
 package com.example.eonnav;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,37 +15,12 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Button button = findViewById(R.id.buttonPokedex);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
-        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025";
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, PokedexActivity.class);
+            startActivity(intent);
+        });
 
-        StringRequest request = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        JSONArray results = json.getJSONArray("results");
-
-                        List<String> names = new ArrayList<>();
-
-                        for (int i = 0; i < results.length(); i++) {
-                            JSONObject pokemon = results.getJSONObject(i);
-                            names.add(pokemon.getString("name"));
-                        }
-
-                        PokemonAdapter adapter = new PokemonAdapter(this, names);
-                        recyclerView.setAdapter(adapter);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> {
-                    error.printStackTrace();
-                });
-
-        queue.add(request);
     }
 }
