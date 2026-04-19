@@ -32,15 +32,21 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String name = pokemonList.get(position);
+        String data = pokemonList.get(position);
+        String[] parts = data.split("\\|");
+
+        String name = parts[0];
+        String url = parts[1];
+
+        String[] urlParts = url.split("/");
+        int id = Integer.parseInt(urlParts[urlParts.length - 1]);
 
         holder.textView.setText(name);
-
-        int id = position + 1;
 
         //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"; // Imagenes oficiales
         String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + id + ".png"; // Sprites Pixel art
         //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/" + id + ".png"; //Sprites GB
+
         Picasso.get().load(imageUrl).into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
@@ -73,9 +79,12 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             pokemonList.addAll(pokemonListFull);
         } else {
             text = text.toLowerCase();
-            for (String name : pokemonListFull) {
+            for (String data : pokemonListFull) {
+                String[] parts = data.split("\\|");
+                String name = parts[0];
+
                 if (name.toLowerCase().contains(text)) {
-                    pokemonList.add(name);
+                    pokemonList.add(data);
                 }
             }
         }

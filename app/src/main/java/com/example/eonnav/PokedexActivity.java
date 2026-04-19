@@ -38,6 +38,7 @@ public class PokedexActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
 
             if (item.getItemId() == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             }
 
@@ -58,9 +59,9 @@ public class PokedexActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
         //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
-        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
+        String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
 
         EditText searchBar = findViewById(R.id.searchBar);
 
@@ -74,7 +75,10 @@ public class PokedexActivity extends AppCompatActivity {
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject pokemon = results.getJSONObject(i);
-                    names.add(pokemon.getString("name"));
+                    String name = pokemon.getString("name");
+                    String pokeurl = pokemon.getString("url");
+
+                    names.add(name + "|" + pokeurl);
                 }
 
                 PokemonAdapter adapter = new PokemonAdapter(this, names);

@@ -2,4 +2,22 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="purple">#A788E2</color>
+    <color name="light_blue">#CEDCE4</color>
+    <color name="dark_purple">#6F4EC1</color>
+    <color name="blue">#4A9CDE</color>
+    <color name="dexnav_orange">#D98A3A</color>
+    <color name="dexnav_green">#A5D089</color>
+    <color name="dexnav_light_green">#E2EDE1</color>
+    <color name="dexnav_white_pink">#EFE5ED</color>
+    <color name="dexnav_blue">#99BCD5</color>
+    <color name="dexnav_gray">#B3716F6F</color>
+    <color name="dexnav_dark">#3A3A3A</color>
+
+    <color name="eonnav_dark_blue">#1E3A8A</color>
+    <color name="eonnav_blue">#3B82F6</color>
+    <color name="eonnav_white">#F8FAFC</color>
+    <color name="eonnav_grey">#E2E8F0</color>
+    <color name="eonnav_light_blue">#60A5FA</color>
+
 </resources>
