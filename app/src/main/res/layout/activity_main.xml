@@ -18,14 +18,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconSize="32dp"
+        app:itemIconSize="24dp"
 
-        android:background="#CDFFFFFF"
+        android:background="@color/white"
         app:menu="@menu/bottom_nav_menu"/>
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
