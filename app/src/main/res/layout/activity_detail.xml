@@ -16,26 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"/>
 
-    <!-- Imagen -->
-    <ImageView
-        android:id="@+id/imagePokemon"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        app:layout_constraintTop_toBottomOf="@id/textName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Info -->
+    <!-- Nº Pokédex -->
     <TextView
-        android:id="@+id/textInfo"
+        android:id="@+id/textNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Info"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/imagePokemon"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+        android:text="#000"
+        android:textSize="16sp"
+        android:textColor="#888888"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textName"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- Botón fav -->
     <ImageView
@@ -46,5 +37,91 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"/>
+
+    <!-- Imagen -->
+    <ImageView
+        android:id="@+id/imagePokemon"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        app:layout_constraintTop_toBottomOf="@id/textNumber"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Generación -->
+    <TextView
+        android:id="@+id/textGeneration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Generación"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/imagePokemon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Tipos -->
+    <TextView
+        android:id="@+id/textTypes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipos"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/textGeneration"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Info -->
+    <TextView
+        android:id="@+id/textInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Información"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/textTypes"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Descripción -->
+    <TextView
+        android:id="@+id/textDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Descripción"
+        android:textSize="15sp"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintTop_toBottomOf="@id/textInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Título movimientos -->
+    <TextView
+        android:id="@+id/textMovesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Movimientos"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Lista movimientos -->
+    <TextView
+        android:id="@+id/textMoves"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintTop_toBottomOf="@id/textMovesTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
