@@ -31,57 +31,41 @@ public class PokedexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pokedex);
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        bottomNav.setItemIconTintList(null);
-        bottomNav.setItemTextColor(null);
-
-        bottomNav.setOnItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.nav_home) {
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            }
-
-            if (item.getItemId() == R.id.nav_pokedex) {
-                startActivity(new Intent(this, PokedexActivity.class));
-                return true;
-            }
-
-            if (item.getItemId() == R.id.nav_favorites) {
-                // futura pantalla de favoritos
-                return true;
-            }
-
-            return false;
-        });
-
+        // RecyclerView donde se mostrarán los Pokémon
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        // 2 columnas
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
+        // Librería volley para las peticiones HTTP
         RequestQueue queue = Volley.newRequestQueue(this);
-        //String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
-        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
-        String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
 
+        // URL de la PokeAPI
+        String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
+
+        // Barra de búsqueda
         EditText searchBar = findViewById(R.id.searchBar);
 
+        // Petición GET a la API
         StringRequest request = new StringRequest(Request.Method.GET, url,
         response -> {
             try {
                 JSONObject json = new JSONObject(response);
                 JSONArray results = json.getJSONArray("results");
 
-                List<String> names = new ArrayList<>();
+                List<Pokemon> pokemonList = new ArrayList<>();
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject pokemon = results.getJSONObject(i);
-                    String name = pokemon.getString("name");
+                    String rawName = pokemon.getString("name");
+                    String name = rawName.substring(0, 1).toUpperCase() + rawName.substring(1);
                     String pokeurl = pokemon.getString("url");
 
-                    names.add(name + "|" + pokeurl);
+                    pokemonList.add(new Pokemon(name, pokeurl ));
                 }
 
-                PokemonAdapter adapter = new PokemonAdapter(this, names);
+                PokemonAdapter adapter = new PokemonAdapter(this, pokemonList);
                 recyclerView.setAdapter(adapter);
 
                 searchBar.addTextChangedListener(new TextWatcher() {
@@ -103,6 +87,33 @@ public class PokedexActivity extends AppCompatActivity {
         },
         error -> {
             error.printStackTrace();
+        });
+
+        // Inicialización del menú inferior
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+
+        // Quita colores por defecto para usar los personalizados
+        bottomNav.setItemIconTintList(null);
+        bottomNav.setItemTextColor(null);
+
+        // Listener para moverse entre pantallas
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            if (item.getItemId() == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            }
+
+            if (item.getItemId() == R.id.nav_pokedex) {
+                return true;
+            }
+
+            if (item.getItemId() == R.id.nav_favorites) {
+                startActivity(new Intent(this, FavoritesActivity.class));
+                return true;
+            }
+
+            return false;
         });
 
         queue.add(request);

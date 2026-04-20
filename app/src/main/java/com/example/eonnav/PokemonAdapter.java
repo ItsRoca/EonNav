@@ -24,10 +24,10 @@ import java.util.List;
 
 public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHolder> {
 
-    List<String> pokemonList;
-    List<String> pokemonListFull;
+    List<Pokemon> pokemonList;
+    List<Pokemon> pokemonListFull;
     private Context context;
-    public PokemonAdapter(Context context, List<String> names) {
+    public PokemonAdapter(Context context, List<Pokemon> names) {
         this.context = context;
         this.pokemonList = new ArrayList<>(names);
         this.pokemonListFull = new ArrayList<>(names);
@@ -42,25 +42,14 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String data = pokemonList.get(position);
-        String[] parts = data.split("\\|");
+        Pokemon pokemon = pokemonList.get(position);
 
+        String name = pokemon.getName();
+        String url = pokemon.getUrl();
 
-        String name = parts[0];
-        String url = parts[1];
-
-        String[] urlParts = url.split("/");
-        int id = Integer.parseInt(urlParts[urlParts.length - 1]);
 
         holder.textView.setText(name);
         holder.cardBackground.setBackgroundResource(R.drawable.pokemon_card);
-        Drawable bg = holder.cardBackground.getBackground().mutate();
-
-        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"; // Imagenes oficiales
-        String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + id + ".png"; // Sprites Pixel art
-        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/" + id + ".png"; //Sprites GB
-
-        Picasso.get().load(imageUrl).into(holder.imageView);
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -68,6 +57,13 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                 response -> {
                     try {
                         JSONObject json = new JSONObject(response);
+
+                        int id = json.getInt("id");
+                        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"; // Imagenes oficiales
+                        String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + id + ".png"; // Sprites Pixel art
+                        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/" + id + ".png"; //Sprites GB
+                        Picasso.get().load(imageUrl).into(holder.imageView);
+
                         JSONArray types = json.getJSONArray("types");
 
                         String type1 = types.getJSONObject(0)
@@ -95,6 +91,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("name", name);
+            intent.putExtra("url", url);
             context.startActivity(intent);
         });
     }
@@ -107,6 +104,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
             int color1 = getTypeColor(type1);
             drawable.setColor(color1);
+
             int textColor = getContrastColor(color1);
             holder.textView.setTextColor(textColor);
 
@@ -114,7 +112,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                 int color2 = getTypeColor(type2);
                 drawable.setStroke(6, color2);
             } else {
-                drawable.setStroke(4, darkenColor(color1));
+                drawable.setStroke(6, darkenColor(color1));
             }
         }
     }
@@ -185,12 +183,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             pokemonList.addAll(pokemonListFull);
         } else {
             text = text.toLowerCase();
-            for (String data : pokemonListFull) {
-                String[] parts = data.split("\\|");
-                String name = parts[0];
 
-                if (name.toLowerCase().contains(text)) {
-                    pokemonList.add(data);
+            for (Pokemon p : pokemonListFull) {
+                if (p.getName().toLowerCase().contains(text)) {
+                    pokemonList.add(p);
                 }
             }
         }

@@ -28,13 +28,17 @@ public class DetailActivity extends AppCompatActivity {
 
         String name = getIntent().getStringExtra("name");
 
+        String nombre = name.substring(0, 1).toUpperCase() + name.substring(1);
+
         ImageView image = findViewById(R.id.imagePokemon);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://pokeapi.co/api/v2/pokemon/" + name;
 
-        TextView text = findViewById(R.id.textDetail);
-        text.setText(name);
+        TextView textName = findViewById(R.id.textName);
+        TextView textInfo = findViewById(R.id.textInfo);
+        textName.setText(nombre);
+
 
         ImageView buttonFav = findViewById(R.id.buttonFav);
         SharedPreferences prefs = getSharedPreferences("favorites", MODE_PRIVATE);
@@ -51,12 +55,10 @@ public class DetailActivity extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(response);
 
-                        String nombre = json.getString("name");
-                        nombre = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
                         int height = json.getInt("height");
                         double heightMeters = height / 10.0;
 
-                        text.setText(nombre + "\nAltura: " + heightMeters + " m");
+                        textInfo.setText(nombre + "\nAltura: " + heightMeters + " m");
 
                         JSONObject sprites = json.getJSONObject("sprites");
                         String imageUrl = sprites
@@ -71,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    text.setText("Error");
+                    textInfo.setText("Error");
                 });
 
         queue.add(request);
@@ -80,9 +82,6 @@ public class DetailActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = prefs.edit();
             boolean favorito = prefs.getBoolean(name, false);
-
-            String nombre = name;
-            nombre = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
 
             if (favorito) {
                 editor.remove(name);
