@@ -1,21 +1,24 @@
 package com.example.eonnav;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,30 +27,41 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokedexActivity extends AppCompatActivity {
 
+public class PokedexFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private EditText searchBar;
+    private PokemonAdapter adapter;
+    private RequestQueue requestQueue;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pokedex);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        View view = inflater.inflate(R.layout.fragment_pokedex, container, false);
 
         // RecyclerView donde se mostrarán los Pokémon
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        searchBar = view.findViewById(R.id.searchBar);
         // 2 columnas
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
         // Librería volley para las peticiones HTTP
-        RequestQueue queue = Volley.newRequestQueue(this);
+        requestQueue = Volley.newRequestQueue(requireContext());
 
         // URL de la PokeAPI
-        String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
+        //String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
         //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
-        //String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
+        String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
 
-        // Barra de búsqueda
-        EditText searchBar = findViewById(R.id.searchBar);
+        // Barra de busqueda
+        EditText searchBar = view.findViewById(R.id.searchBar);
 
-        // Petición GET a la API
+        // Peticion GET a pokeAPI
         StringRequest request = new StringRequest(Request.Method.GET, url,
         response -> {
             try {
@@ -65,7 +79,7 @@ public class PokedexActivity extends AppCompatActivity {
                     pokemonList.add(new Pokemon(name, pokeurl ));
                 }
 
-                PokemonAdapter adapter = new PokemonAdapter(this, pokemonList);
+                adapter = new PokemonAdapter(requireContext(), pokemonList);
                 recyclerView.setAdapter(adapter);
 
                 searchBar.addTextChangedListener(new TextWatcher() {
@@ -89,34 +103,20 @@ public class PokedexActivity extends AppCompatActivity {
             error.printStackTrace();
         });
 
-        // Inicialización del menú inferior
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
 
-        // Quita colores por defecto para usar los personalizados
-        bottomNav.setItemIconTintList(null);
-        bottomNav.setItemTextColor(null);
+        requestQueue.add(request);
 
-        // Listener para moverse entre pantallas
-        bottomNav.setOnItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.nav_home) {
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            }
-
-            if (item.getItemId() == R.id.nav_pokedex) {
-                return true;
-            }
-
-            if (item.getItemId() == R.id.nav_favorites) {
-                startActivity(new Intent(this, FavoritesActivity.class));
-                return true;
-            }
-
-            return false;
-        });
-
-        queue.add(request);
+        return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // Instanciamos referencias a null para evitar errores
+        recyclerView = null;
+        searchBar = null;
+        adapter = null;
+    }
 }
+
