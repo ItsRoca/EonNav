@@ -46,6 +46,7 @@ public class PokedexFragment extends Fragment {
 
         // RecyclerView donde se mostrarán los Pokémon
         recyclerView = view.findViewById(R.id.recyclerView);
+        // Barra de busqueda
         searchBar = view.findViewById(R.id.searchBar);
         // 2 columnas
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
@@ -57,9 +58,6 @@ public class PokedexFragment extends Fragment {
         //String url = "https://pokeapi.co/api/v2/pokemon?limit=151";
         //String url = "https://pokeapi.co/api/v2/pokemon?limit=1025"; //Ver pokedex actual entera
         String url = "https://pokeapi.co/api/v2/pokemon?limit=1351"; //Ver pokedex actual entera con todas las variantes de cada pokemon
-
-        // Barra de busqueda
-        EditText searchBar = view.findViewById(R.id.searchBar);
 
         // Peticion GET a pokeAPI
         StringRequest request = new StringRequest(Request.Method.GET, url,

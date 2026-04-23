@@ -27,10 +27,12 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     List<Pokemon> pokemonList;
     List<Pokemon> pokemonListFull;
     private Context context;
+    private RequestQueue queue;
     public PokemonAdapter(Context context, List<Pokemon> names) {
         this.context = context;
         this.pokemonList = new ArrayList<>(names);
         this.pokemonListFull = new ArrayList<>(names);
+        this.queue = Volley.newRequestQueue(context);
     }
 
     @Override
@@ -51,18 +53,40 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         holder.textView.setText(name);
         holder.cardBackground.setBackgroundResource(R.drawable.pokemon_card);
 
-        RequestQueue queue = Volley.newRequestQueue(context);
-
         StringRequest typeRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
                         JSONObject json = new JSONObject(response);
 
-                        int id = json.getInt("id");
-                        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"; // Imagenes oficiales
-                        String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + id + ".png"; // Sprites Pixel art
-                        //String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/" + id + ".png"; //Sprites GB
-                        Picasso.get().load(imageUrl).into(holder.imageView);
+                        JSONObject sprites = json.getJSONObject("sprites");
+
+                        // Pixel sprite (puede ser null)
+                        String pixelSprite = sprites.getString("front_default");
+
+                        // Official artwork (existe 100%)
+                        String officialSprite = sprites
+                                .getJSONObject("other")
+                                .getJSONObject("official-artwork")
+                                .getString("front_default");
+
+                        // Elegir cual usar
+                        String imageUrl;
+
+                        if (pixelSprite != null && !pixelSprite.equals("null")) {
+                            imageUrl = pixelSprite; // URL a pixelSprites
+                        } else {
+                            imageUrl = officialSprite; // URL a sprites oficiales (por si no existe el pixelSprite)
+                        }
+
+                        // Limpiar imagen previa
+                        holder.imageView.setImageDrawable(null);
+
+                        // Cargar imagen
+                        Picasso.get()
+                                .load(imageUrl)
+                                .placeholder(R.drawable.pokemon_card)
+                                .error(R.drawable.icon_pokeball)
+                                .into(holder.imageView);
 
                         JSONArray types = json.getJSONArray("types");
 
@@ -182,7 +206,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         if (text.isEmpty()) {
             pokemonList.addAll(pokemonListFull);
         } else {
-            text = text.toLowerCase();
+            text = text.toLowerCase().trim();
 
             for (Pokemon p : pokemonListFull) {
                 if (p.getName().toLowerCase().contains(text)) {
