@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:descendantFocusability="beforeDescendants">
+
+    <TextView
+        android:id="@+id/filterFire"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fuego"
+        android:padding="12dp"/>
+
+    <TextView
+        android:id="@+id/filterWater"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agua"
+        android:padding="12dp"/>
+
+    <TextView
+        android:id="@+id/filterGrass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Planta"
+        android:padding="12dp"/>
+
+    <TextView
+        android:id="@+id/filterFavorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Favoritos"
+        android:padding="12dp"/>
+
+    <Button
+        android:id="@+id/applyFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aplicar"/>
+
+    <Button
+        android:id="@+id/clearFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Limpiar filtros"/>
+</LinearLayout>

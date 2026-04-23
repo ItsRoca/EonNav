@@ -2,10 +2,12 @@ package com.example.eonnav;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.*;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,14 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     List<Pokemon> pokemonListFull;
     private Context context;
     private RequestQueue queue;
+
+    private String searchText = "";
+    private String typeFilter = null;
+    private Boolean onlyFavorites = false;
+    private boolean isFavorite(Context context, String name) {
+        SharedPreferences prefs = context.getSharedPreferences("favorites", Context.MODE_PRIVATE);
+        return prefs.getBoolean(name, false);
+    }
     public PokemonAdapter(Context context, List<Pokemon> names) {
         this.context = context;
         this.pokemonList = new ArrayList<>(names);
@@ -60,6 +70,22 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
                         JSONObject sprites = json.getJSONObject("sprites");
 
+                        pokemon.setId(json.getInt("id"));
+
+                        JSONArray types = json.getJSONArray("types");
+
+                        List<String> typeList = new ArrayList<>();
+
+                        for (int i = 0; i < types.length(); i++) {
+                            String type = types.getJSONObject(i)
+                                    .getJSONObject("type")
+                                    .getString("name");
+
+                            typeList.add(type);
+                        }
+
+                        pokemon.setTypes(typeList);
+
                         // Pixel sprite (puede ser null)
                         String pixelSprite = sprites.getString("front_default");
 
@@ -87,8 +113,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                                 .placeholder(R.drawable.pokemon_card)
                                 .error(R.drawable.icon_pokeball)
                                 .into(holder.imageView);
-
-                        JSONArray types = json.getJSONArray("types");
 
                         String type1 = types.getJSONObject(0)
                                 .getJSONObject("type")
@@ -201,20 +225,36 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     }
 
     public void filter(String text) {
+
+        searchText = text.toLowerCase().trim();
+
         pokemonList.clear();
 
-        if (text.isEmpty()) {
-            pokemonList.addAll(pokemonListFull);
-        } else {
-            text = text.toLowerCase().trim();
+        for (Pokemon p : pokemonListFull) {
 
-            for (Pokemon p : pokemonListFull) {
-                if (p.getName().toLowerCase().contains(text)) {
-                    pokemonList.add(p);
-                }
+            String name = p.getName().toLowerCase();
+
+            boolean matchesSearch = searchText.isEmpty() || name.contains(searchText);
+
+            boolean matchesType = typeFilter == null || (p.getTypes() != null && p.getTypes().contains(typeFilter));
+
+            boolean matchesFav = !onlyFavorites || isFavorite(context, p.getName().toLowerCase());
+
+            if (matchesSearch && matchesType && matchesFav) {
+                pokemonList.add(p);
             }
         }
 
+
         notifyDataSetChanged();
     }
+
+    public void setTypeFilter(String type) {
+        this.typeFilter = type;
+    }
+
+    public void setOnlyFavorites(boolean value) {
+        this.onlyFavorites = value;
+    }
+
 }
