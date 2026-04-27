@@ -1,14 +1,18 @@
 package com.example.eonnav;
 
 
+import android.app.AlertDialog;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +37,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.eonnav.utils.TypeUtils;
+import androidx.lifecycle.ViewModelProvider;
+
+
 
 public class PokedexFragment extends Fragment {
 
@@ -39,8 +48,9 @@ public class PokedexFragment extends Fragment {
     private EditText searchBar;
     private PokemonAdapter adapter;
     private RequestQueue requestQueue;
-    private String selectedType = null;
-    private boolean onlyFavorites = false;
+    private PokedexViewModel viewModel;
+
+
 
     @Nullable
     @Override
@@ -50,6 +60,8 @@ public class PokedexFragment extends Fragment {
             @Nullable Bundle savedInstanceState
     ) {
         View view = inflater.inflate(R.layout.fragment_pokedex, container, false);
+
+        viewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
 
         // RecyclerView donde se mostrarán los Pokémon
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -166,43 +178,126 @@ public class PokedexFragment extends Fragment {
 
         requestQueue.add(request);
     }
+
+    // Redimensionar iconos
+    private void setScaledTypeIcon(TextView textView, String type) {
+        Drawable drawable = ContextCompat.getDrawable(
+                requireContext(),
+                TypeUtils.getTypeIcon(type)
+        );
+
+        if (drawable == null) return;
+
+        // Tamaño objetivo en dp (ALTURA)
+        int targetHeightDp = 22;
+        float density = getResources().getDisplayMetrics().density;
+        int targetHeightPx = (int) (targetHeightDp * density);
+
+        // Tamaño original del drawable
+        int intrinsicWidth = drawable.getIntrinsicWidth();
+        int intrinsicHeight = drawable.getIntrinsicHeight();
+
+        if (intrinsicWidth <= 0 || intrinsicHeight <= 0) return;
+
+        // Calcular ancho manteniendo proporcion
+        float ratio = (float) intrinsicWidth / intrinsicHeight;
+        int targetWidthPx = (int) (targetHeightPx * ratio);
+
+        // Aplicar tamaño proporcional
+        drawable.setBounds(0, 0, targetWidthPx, targetHeightPx);
+
+        textView.setCompoundDrawables(drawable, null, null, null);
+        textView.setCompoundDrawablePadding(
+                (int) (8 * density)
+        );
+    }
+
     private void showFilterDialog() {
 
         View view = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_filters, null);
 
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new android.app.AlertDialog.Builder(requireContext())
                 .setView(view)
                 .create();
 
-        TextView fire = view.findViewById(R.id.filterFire);
-        TextView water = view.findViewById(R.id.filterWater);
-        TextView grass = view.findViewById(R.id.filterGrass);
+        AutoCompleteTextView typeDropdown = view.findViewById(R.id.typeDropdown);
         TextView fav = view.findViewById(R.id.filterFavorites);
         Button apply = view.findViewById(R.id.applyFilters);
+        Button clear = view.findViewById(R.id.clearFilters);
 
-        fire.setOnClickListener(v -> {
-                selectedType = "fire";
-                selectType(fire, fire, water, grass);
-        });
-        water.setOnClickListener(v -> {
-            selectedType = "water";
-            selectType(water, fire, water, grass);
-        });
-        grass.setOnClickListener(v -> {
-            selectedType = "grass";
-            selectType(grass, fire, water, grass);
+        // Lista de tipos
+        List<String> types = new ArrayList<>();
+        types.add("fire");
+        types.add("water");
+        types.add("grass");
+        types.add("electric");
+        types.add("ice");
+        types.add("fighting");
+        types.add("poison");
+        types.add("ground");
+        types.add("flying");
+        types.add("psychic");
+        types.add("bug");
+        types.add("rock");
+        types.add("ghost");
+        types.add("dragon");
+        types.add("dark");
+        types.add("steel");
+        types.add("fairy");
+
+        // Adapter iconos
+        TypeDropdownAdapter typeAdapter = new TypeDropdownAdapter(requireContext(), types);
+
+        typeDropdown.setAdapter(typeAdapter);
+
+        typeDropdown.setOnClickListener(v -> typeDropdown.showDropDown());
+
+        // Seleccion de tipo
+        typeDropdown.setOnItemClickListener((parent, v, position, id) -> {
+
+            String type = types.get(position);
+            viewModel.selectedType = types.get(position);
+
+            // Forzar que no haya texto
+            typeDropdown.setText("", false);
+
+
+            // Poner el icono
+            Drawable drawable = ContextCompat.getDrawable(
+                    requireContext(),
+                    TypeUtils.getTypeIcon(type)
+            );
+
+            if (drawable != null) {
+                float density = getResources().getDisplayMetrics().density;
+                int targetHeight = (int) (20 * density);
+
+                int w = drawable.getIntrinsicWidth();
+                int h = drawable.getIntrinsicHeight();
+                float ratio = (float) w / h;
+
+                int targetWidth = (int) (targetHeight * ratio);
+                drawable.setBounds(0, 0, targetWidth, targetHeight);
+
+                typeDropdown.setCompoundDrawables(drawable, null, null, null);
+                typeDropdown.setCompoundDrawablePadding(
+                        (int) (8 * density)
+                );
+            }
+
+
+
         });
 
-        fav.setOnClickListener(v -> onlyFavorites = !onlyFavorites);
-        fav.setOnClickListener(v -> {
-            Log.d("DEBUG", "FAVORITOS CLICK");
-        });
+        //Favoritos
+        fav.setOnClickListener(v -> viewModel.onlyFavorites = !viewModel.onlyFavorites);
 
+        //Aplicar filtros
         apply.setOnClickListener(v -> {
 
-            if (selectedType != null) {
-                loadByType(selectedType);
+            if (viewModel.selectedType != null) {
+                loadByType(viewModel.selectedType);
             } else {
                 loadAllPokemon();
             }
@@ -210,15 +305,12 @@ public class PokedexFragment extends Fragment {
             dialog.dismiss();
         });
 
-        dialog.show();
-
-        Button clear = view.findViewById(R.id.clearFilters);
-
+        // Limpiar filtros activos
         clear.setOnClickListener(v -> {
 
             // reset variables del fragment
-            selectedType = null;
-            onlyFavorites = false;
+            viewModel.selectedType = null;
+            viewModel.onlyFavorites = false;
 
             // reset adapter
             adapter.setTypeFilter(null);
@@ -227,6 +319,19 @@ public class PokedexFragment extends Fragment {
             loadAllPokemon();
 
             dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void setupTypeFilter(
+            TextView view,
+            String type,
+            TextView... allViews
+    ) {
+        view.setOnClickListener(v -> {
+            viewModel.selectedType = type;
+            selectType(view, allViews);
         });
     }
 

@@ -7,28 +7,32 @@
     android:background="@android:color/white"
     android:clickable="true"
     android:focusable="true"
-    android:descendantFocusability="beforeDescendants">
+    android:descendantFocusability="beforeDescendants"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+    <AutoCompleteTextView
+        android:id="@+id/typeDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="none"/>
 
     <TextView
         android:id="@+id/filterFire"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fuego"
-        android:padding="12dp"/>
+        android:padding="4dp"/>
 
     <TextView
         android:id="@+id/filterWater"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Agua"
-        android:padding="12dp"/>
+        android:padding="4dp"/>
 
     <TextView
         android:id="@+id/filterGrass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Planta"
-        android:padding="12dp"/>
+        android:padding="4dp"/>
 
     <TextView
         android:id="@+id/filterFavorites"
