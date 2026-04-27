@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_description"
+        android:title="Description"
+        android:icon="@drawable/icon_pokedex"/>
+
+    <item
+        android:id="@+id/nav_data"
+        android:title="Data"
+        android:icon="@drawable/icon_pokeball"/>
+
+    <item
+        android:id="@+id/nav_family"
+        android:title="Family"
+        android:icon="@drawable/filled_star"/>
+
+    <item
+        android:id="@+id/nav_moves"
+        android:title="Moves"
+        android:icon="@drawable/icon_pokedex"/>
+
+    <item
+        android:id="@+id/nav_battleinfo"
+        android:title="BattleInfo"
+        android:icon="@drawable/icon_pokeball"/>
+
+</menu>
