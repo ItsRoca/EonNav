@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokemon;
 
 import java.util.List;
 

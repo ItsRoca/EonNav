@@ -14,6 +14,7 @@ public class TypeUtils {
         TYPE_ICONS.put("grass", R.drawable.tipo_planta);
         TYPE_ICONS.put("electric", R.drawable.tipo_electrico);
         TYPE_ICONS.put("ice", R.drawable.tipo_hielo);
+        TYPE_ICONS.put("normal", R.drawable.tipo_normal);
         TYPE_ICONS.put("fighting", R.drawable.tipo_lucha);
         TYPE_ICONS.put("poison", R.drawable.tipo_veneno);
         TYPE_ICONS.put("ground", R.drawable.tipo_tierra);

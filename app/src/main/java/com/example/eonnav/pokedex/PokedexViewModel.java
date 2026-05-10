@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokedex;
 
 import androidx.lifecycle.ViewModel;
 

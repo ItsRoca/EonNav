@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokedex.detail;
 
 import android.os.Bundle;
 
@@ -24,17 +24,9 @@ public class DetailPagerAdapter extends FragmentStateAdapter {
                 fragment = new DetailDescriptionFragment();
                 break;
             case 1:
-                fragment = new DetailDataFragment();
-                break;
-            case 2:
-                fragment = new DetailFamilyFragment();
-                break;
-            case 3:
-                fragment = new DetailMovesFragment();
-                break;
-            case 4:
                 fragment = new DetailBattleInfoFragment();
                 break;
+
             default:
                 fragment = new DetailDescriptionFragment();
                 break;

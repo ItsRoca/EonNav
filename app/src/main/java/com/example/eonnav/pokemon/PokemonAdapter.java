@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokemon;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.*;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +15,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.eonnav.R;
+import com.example.eonnav.pokedex.detail.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;

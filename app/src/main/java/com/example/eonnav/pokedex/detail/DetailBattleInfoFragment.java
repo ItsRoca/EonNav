@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokedex.detail;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,12 +8,14 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-public class DetailDataFragment extends Fragment {
+import com.example.eonnav.R;
 
-    public DetailDataFragment() {}
+public class DetailBattleInfoFragment extends Fragment {
 
-    public static DetailDataFragment newInstance(String description) {
-        DetailDataFragment fragment = new DetailDataFragment();
+    public DetailBattleInfoFragment() {}
+
+    public static DetailBattleInfoFragment newInstance(String description) {
+        DetailBattleInfoFragment fragment = new DetailBattleInfoFragment();
         Bundle args = new Bundle();
         args.putString("desc", description);
         fragment.setArguments(args);

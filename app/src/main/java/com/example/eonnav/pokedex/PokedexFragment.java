@@ -1,4 +1,4 @@
-package com.example.eonnav;
+package com.example.eonnav.pokedex;
 
 
 import android.app.AlertDialog;
@@ -6,9 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +35,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.eonnav.pokemon.Pokemon;
+import com.example.eonnav.pokemon.PokemonAdapter;
+import com.example.eonnav.R;
+import com.example.eonnav.TypeDropdownAdapter;
 import com.example.eonnav.utils.TypeUtils;
 import androidx.lifecycle.ViewModelProvider;
 

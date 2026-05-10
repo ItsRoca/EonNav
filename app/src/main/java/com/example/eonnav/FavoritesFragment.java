@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eonnav.pokemon.Pokemon;
+import com.example.eonnav.pokemon.PokemonAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
