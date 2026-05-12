@@ -207,6 +207,7 @@
             android:text="Formas alternativas"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/evoChainContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -217,11 +218,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/textFormsTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:flexWrap="wrap"/>
+            app:flexWrap="wrap"
+            app:justifyContent="center"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

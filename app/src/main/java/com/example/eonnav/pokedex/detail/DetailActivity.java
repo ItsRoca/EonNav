@@ -221,20 +221,8 @@ public class DetailActivity extends AppCompatActivity {
             viewPager.setCurrentItem(0, true);
             return true;
         }
-        if (id == R.id.nav_data) {
-            viewPager.setCurrentItem(1, true);
-            return true;
-        }
-        if (id == R.id.nav_family) {
-            viewPager.setCurrentItem(2, true);
-            return true;
-        }
-        if (id == R.id.nav_moves) {
-            viewPager.setCurrentItem(3, true);
-            return true;
-        }
         if (id == R.id.nav_battleinfo) {
-            viewPager.setCurrentItem(4, true);
+            viewPager.setCurrentItem(1, true);
             return true;
         }
 

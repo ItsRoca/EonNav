@@ -6,34 +6,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import androidx.fragment.app.Fragment;
 
 import com.example.eonnav.R;
 
 public class DetailBattleInfoFragment extends Fragment {
 
+    private TextView textName;
+    private TextView textNumber;
+
     public DetailBattleInfoFragment() {}
 
-    public static DetailBattleInfoFragment newInstance(String description) {
-        DetailBattleInfoFragment fragment = new DetailBattleInfoFragment();
-        Bundle args = new Bundle();
-        args.putString("desc", description);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_detaildescription, container, false);
+        View view = inflater.inflate(
+                R.layout.fragment_detailbattleinfo,
+                container,
+                false
+        );
 
-        TextView textDesc = view.findViewById(R.id.textDescription);
+        textName = view.findViewById(R.id.textName);
+        textNumber = view.findViewById(R.id.textNumber);
 
-        if (getArguments() != null) {
-            textDesc.setText(getArguments().getString("desc"));
+        Bundle data = getArguments();
+
+        if (data != null) {
+
+            String name = data.getString("name");
+            String number = data.getString("number");
+
+            textName.setText(name);
+            textNumber.setText(number);
         }
 
         return view;
+
     }
+
 }

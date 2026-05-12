@@ -7,21 +7,6 @@
         android:icon="@drawable/icon_pokedex"/>
 
     <item
-        android:id="@+id/nav_data"
-        android:title="Data"
-        android:icon="@drawable/icon_pokeball"/>
-
-    <item
-        android:id="@+id/nav_family"
-        android:title="Family"
-        android:icon="@drawable/filled_star"/>
-
-    <item
-        android:id="@+id/nav_moves"
-        android:title="Moves"
-        android:icon="@drawable/icon_pokedex"/>
-
-    <item
         android:id="@+id/nav_battleinfo"
         android:title="BattleInfo"
         android:icon="@drawable/icon_pokeball"/>
