@@ -4,11 +4,11 @@
     <item
         android:id="@+id/nav_description"
         android:title="Description"
-        android:icon="@drawable/icon_pokedex"/>
+        android:icon="@drawable/icon_pokeball_2"/>
 
     <item
         android:id="@+id/nav_battleinfo"
         android:title="BattleInfo"
-        android:icon="@drawable/icon_pokeball"/>
+        android:icon="@drawable/icon_stats"/>
 
 </menu>

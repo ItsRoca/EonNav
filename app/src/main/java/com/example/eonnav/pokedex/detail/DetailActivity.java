@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -31,9 +32,10 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // Referencias
+        // REFERENCIAS
         viewPager = findViewById(R.id.detailViewPager);
         detailBottomNav = findViewById(R.id.detailBottomNav);
+        detailBottomNav.setItemIconTintList(null);
 
         String name = getIntent().getStringExtra("name").toLowerCase();
 
@@ -48,7 +50,7 @@ public class DetailActivity extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(response);
 
-                    //Necesario para las formas
+                        //Necesario para las formas
                         String speciesUrl = json
                             .getJSONObject("species")
                             .getString("url");
@@ -69,8 +71,6 @@ public class DetailActivity extends AppCompatActivity {
                                 .getString("name");
                         typesList.add(type);
                     }
-                    pokemonData.putStringArrayList("types", typesList);
-
 
                     JSONArray moves = json.getJSONArray("moves");
                     StringBuilder movesStr = new StringBuilder();
@@ -96,7 +96,6 @@ public class DetailActivity extends AppCompatActivity {
 
                     setupViewPagerIfReady(pokemonData);
 
-                    // Habilidades
                     JSONArray abilitiesJson = json.getJSONArray("abilities");
                     ArrayList<String> abilitiesList = new ArrayList<>();
 

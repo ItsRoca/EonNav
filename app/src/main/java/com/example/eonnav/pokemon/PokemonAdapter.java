@@ -1,9 +1,11 @@
 package com.example.eonnav.pokemon;
 
+import static com.example.eonnav.utils.TypeUtils.darkenColor;
+import static com.example.eonnav.utils.TypeUtils.getContrastColor;
+import static com.example.eonnav.utils.TypeUtils.getTypeColor;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.*;
@@ -29,16 +31,18 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
     List<Pokemon> pokemonList;
     List<Pokemon> pokemonListFull;
-    private Context context;
-    private RequestQueue queue;
-
+    private final Context context;
+    private final RequestQueue queue;
+    private String selectedType = null;
     private String searchText = "";
-    private String typeFilter = null;
     private Boolean onlyFavorites = false;
-    private boolean isFavorite(Context context, String name) {
-        SharedPreferences prefs = context.getSharedPreferences("favorites", Context.MODE_PRIVATE);
-        return prefs.getBoolean(name, false);
+    private List<String> favoriteNames = new ArrayList<>();
+
+
+    public void setFavoriteNames(List<String> favorites) {
+        this.favoriteNames = favorites;
     }
+
     public PokemonAdapter(Context context, List<Pokemon> names) {
         this.context = context;
         this.pokemonList = new ArrayList<>(names);
@@ -112,7 +116,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                         Picasso.get()
                                 .load(imageUrl)
                                 .placeholder(R.drawable.pokemon_card)
-                                .error(R.drawable.icon_pokeball)
+                                .error(R.drawable.icon_pokeball_2)
                                 .into(holder.imageView);
 
                         String type1 = types.getJSONObject(0)
@@ -166,47 +170,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         }
     }
 
-    private int getTypeColor(String type) {
-        switch (type) {
-            case "fire": return Color.parseColor("#F08030");
-            case "water": return Color.parseColor("#6890F0");
-            case "grass": return Color.parseColor("#78C850");
-            case "electric": return Color.parseColor("#F8D030");
-            case "ice": return Color.parseColor("#98D8D8");
-            case "fighting": return Color.parseColor("#C03028");
-            case "poison": return Color.parseColor("#A040A0");
-            case "ground": return Color.parseColor("#E0C068");
-            case "flying": return Color.parseColor("#A890F0");
-            case "psychic": return Color.parseColor("#F85888");
-            case "bug": return Color.parseColor("#A8B820");
-            case "rock": return Color.parseColor("#B8A038");
-            case "ghost": return Color.parseColor("#705898");
-            case "dragon": return Color.parseColor("#7038F8");
-            case "dark": return Color.parseColor("#705848");
-            case "steel": return Color.parseColor("#B8B8D0");
-            case "fairy": return Color.parseColor("#EE99AC");
-            case "normal": return Color.parseColor("#A8A878");
-            default: return Color.GRAY;
-        }
-    }
-
-    private int darkenColor(int color) {
-        float factor = 0.7f;
-        return Color.rgb(
-                (int)(Color.red(color) * factor),
-                (int)(Color.green(color) * factor),
-                (int)(Color.blue(color) * factor)
-        );
-    }
-
-    private int getContrastColor(int color) {
-        double luminance = (0.299 * Color.red(color) +
-                0.587 * Color.green(color) +
-                0.114 * Color.blue(color)) / 255;
-
-        return luminance > 0.5 ? Color.BLACK : Color.WHITE;
-    }
-
     @Override
     public int getItemCount() {
         return pokemonList.size();
@@ -237,25 +200,36 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
             boolean matchesSearch = searchText.isEmpty() || name.contains(searchText);
 
-            boolean matchesType = typeFilter == null || (p.getTypes() != null && p.getTypes().contains(typeFilter));
+            boolean matchesFav = !onlyFavorites ||
+                    (favoriteNames != null &&
+                            favoriteNames.contains(p.getName().toLowerCase()));
 
-            boolean matchesFav = !onlyFavorites || isFavorite(context, p.getName().toLowerCase());
+            boolean matchesType = true;
 
-            if (matchesSearch && matchesType && matchesFav) {
+            if (selectedType != null) {
+                List<String> types = p.getTypes();
+
+                matchesType = types != null && types.contains(selectedType);
+            }
+
+            if (matchesSearch && matchesFav && matchesType) {
                 pokemonList.add(p);
             }
         }
 
-
         notifyDataSetChanged();
     }
 
-    public void setTypeFilter(String type) {
-        this.typeFilter = type;
-    }
 
     public void setOnlyFavorites(boolean value) {
         this.onlyFavorites = value;
     }
+
+
+    public void setSelectedType(String type) {
+        this.selectedType = type;
+    }
+
+
 
 }

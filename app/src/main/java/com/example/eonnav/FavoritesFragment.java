@@ -4,6 +4,7 @@ package com.example.eonnav;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eonnav.pokemon.Pokemon;
 import com.example.eonnav.pokemon.PokemonAdapter;
+import com.example.eonnav.utils.Favorite;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
 
 
 public class FavoritesFragment extends Fragment {
@@ -62,34 +66,66 @@ public class FavoritesFragment extends Fragment {
 
     private void cargarFavoritos() {
 
-        SharedPreferences prefs = requireContext().getSharedPreferences("favorites", requireContext().MODE_PRIVATE);
-        Map<String, ?> allEntries = prefs.getAll();
+        Log.d("FAV", "Entrando a cargarFavoritos");
 
-        List<String> favoriteNames = new ArrayList<>();
+        ApiService api = RetrofitInstance.getRetrofit().create(ApiService.class);
 
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            if (entry.getValue() instanceof Boolean && (Boolean) entry.getValue()) {
-                favoriteNames.add(entry.getKey());
+
+        int userId = 1;
+        api.getFavorites(userId).enqueue(new retrofit2.Callback<List<Favorite>>() {
+
+            @Override
+            public void onResponse(Call<List<Favorite>> call, retrofit2.Response<List<Favorite>> response) {
+
+
+                Log.d("FAV", "Código HTTP: " + response.code());
+
+                if (response.body() != null) {
+                    Log.d("FAV", "Body recibido");
+                } else {
+                    Log.d("FAV", "Body es NULL");
+                }
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    List<Favorite> favorites = response.body();
+                    Log.d("FAV", "Favoritos: " + favorites.size());
+
+                } else {
+                    Log.d("FAV", "Error en respuesta");
+                }
+                if (response.isSuccessful() && response.body() != null) {
+
+                    List<Favorite> favorites = response.body();
+
+                    Log.d("FAV", "Favoritos recibidos: " + favorites.size());
+
+                    List<Pokemon> favoritePokemon = new ArrayList<>();
+
+                    for (Favorite fav : favorites) {
+                        String name = fav.pokemon_name;
+                        String url = "https://pokeapi.co/api/v2/pokemon/" + name;
+                        favoritePokemon.add(new Pokemon(name, url));
+                    }
+
+                    if (favoritePokemon.isEmpty()) {
+                        emptyText.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyText.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                        adapter = new PokemonAdapter(requireContext(), favoritePokemon);
+                        recyclerView.setAdapter(adapter);
+                    }
+                }
             }
-        }
 
-        List<Pokemon> favoritePokemon = new ArrayList<>();
-
-        for (String name : favoriteNames) {
-            String url = "https://pokeapi.co/api/v2/pokemon/" + name;
-            favoritePokemon.add(new Pokemon(name, url));
-        }
-
-        if (favoritePokemon.isEmpty()) {
-            emptyText.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            emptyText.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-
-            adapter = new PokemonAdapter(requireContext(), favoritePokemon);
-            recyclerView.setAdapter(adapter);
-        }
+            @Override
+            public void onFailure(Call<List<Favorite>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override

@@ -42,7 +42,8 @@
             android:src="@drawable/empty_star"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp"
+            />
 
         <!-- Imagen -->
         <ImageView

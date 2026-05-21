@@ -40,6 +40,7 @@ public class DetailBattleInfoFragment extends Fragment {
     private LinearLayout layoutStats;
     private LinearLayout layoutWeakness;
     private LinearLayout layoutMoves;
+    private RequestQueue queue;
 
     public DetailBattleInfoFragment() {}
 
@@ -57,6 +58,7 @@ public class DetailBattleInfoFragment extends Fragment {
 
         Bundle data = getArguments();
 
+        queue = Volley.newRequestQueue(requireContext());
 
         layoutStats = view.findViewById(R.id.layoutStats); // Visualizar stats
         layoutWeakness = view.findViewById(R.id.layoutWeakness); //Visualizar debilidades y resistencias
@@ -71,7 +73,6 @@ public class DetailBattleInfoFragment extends Fragment {
             textNumber.setText(number);
 
             loadPokemonStats(name);
-            loadWeaknesses(name);
         }
 
         return view;
@@ -81,8 +82,6 @@ public class DetailBattleInfoFragment extends Fragment {
     // CARGAR STATS
     private void loadPokemonStats(String name) {
 
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
-
         String url = "https://pokeapi.co/api/v2/pokemon/" + name;
 
         StringRequest request = new StringRequest(
@@ -90,12 +89,18 @@ public class DetailBattleInfoFragment extends Fragment {
             url,
             response -> {
 
+                if (!isAdded()) return;
+
                 try {
                     JSONObject json = new JSONObject(response);
                     JSONArray statsArray = json.getJSONArray("stats");
 
                     JSONArray movesArray = json.getJSONArray("moves");
                     loadMoves(movesArray);
+
+                    JSONArray typesArray = json.getJSONArray("types");
+                    loadWeaknesses(typesArray);
+
 
                     layoutStats.removeAllViews();
 
@@ -144,25 +149,25 @@ public class DetailBattleInfoFragment extends Fragment {
     // MOSTRAR STATS
     private void addStatRow(String statName, int value) {
 
-        LinearLayout row = new LinearLayout(requireContext());
+        LinearLayout row = new LinearLayout(getContext());
         row.setOrientation(LinearLayout.VERTICAL);
         row.setPadding(8, 8, 8, 8);
 
-        LinearLayout topRow = new LinearLayout(requireContext());
+        LinearLayout topRow = new LinearLayout(getContext());
         topRow.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView nameView = new TextView(requireContext());
+        TextView nameView = new TextView(getContext());
         nameView.setText(formatStatName(statName));
         nameView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
-        TextView valueView = new TextView(requireContext());
+        TextView valueView = new TextView(getContext());
         valueView.setText(String.valueOf(value));
         valueView.setGravity(Gravity.END);
 
         topRow.addView(nameView);
         topRow.addView(valueView);
 
-        LinearLayout barBackground = new LinearLayout(requireContext());
+        LinearLayout barBackground = new LinearLayout(getContext());
         barBackground.setLayoutParams(
             new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -172,7 +177,7 @@ public class DetailBattleInfoFragment extends Fragment {
         barBackground.setBackgroundColor(0xFFDDDDDD);
 
 
-        View barFill = new View(requireContext());
+        View barFill = new View(getContext());
 
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
 
@@ -257,7 +262,7 @@ public class DetailBattleInfoFragment extends Fragment {
     // MOSTRAR TOTAL STATS
     private void addTotalStatsRow(int total) {
 
-        TextView totalView = new TextView(requireContext());
+        TextView totalView = new TextView(getContext());
 
         totalView.setText("Total: " + total);
         totalView.setTextSize(18);
@@ -268,72 +273,60 @@ public class DetailBattleInfoFragment extends Fragment {
         layoutStats.addView(totalView);
     }
 
-    private void loadWeaknesses(String name) {
+    // CARGAR INFORMACION DE LOS TIPOS
+    private void loadWeaknesses(JSONArray typesArray) {
 
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        if (!isAdded()) return;
 
-        String url = "https://pokeapi.co/api/v2/pokemon/" + name;
+        try {
+            // Crear lista con los datos de cada tipo
+            List<JSONObject> typeDataList = new ArrayList<>();
 
-        StringRequest request = new StringRequest(
-            Request.Method.GET,
-            url,
-            response -> {
-                try {
-                    JSONObject json = new JSONObject(response);
-                    JSONArray typesArray = json.getJSONArray("types");
+            for (int i = 0; i < typesArray.length(); i++) {
 
-                    // Crear lista con los datos de cada tipo
-                    List<JSONObject> typeDataList = new ArrayList<>();
+                String typeName = typesArray
+                        .getJSONObject(i)
+                        .getJSONObject("type")
+                        .getString("name");
 
-                    for (int i = 0; i < typesArray.length(); i++) {
+                String typeUrl = "https://pokeapi.co/api/v2/type/" + typeName;
 
-                        String typeName = typesArray
-                            .getJSONObject(i)
-                            .getJSONObject("type")
-                            .getString("name");
+                StringRequest typeRequest = new StringRequest(
+                        Request.Method.GET,
+                        typeUrl,
+                        typeResponse -> {
+                            try {
+                                JSONObject typeJson = new JSONObject(typeResponse);
 
-                        String typeUrl = "https://pokeapi.co/api/v2/type/" + typeName;
+                                typeDataList.add(typeJson);
 
-                        StringRequest typeRequest = new StringRequest(
-                            Request.Method.GET,
-                            typeUrl,
-                            typeResponse -> {
-                                try {
-                                    JSONObject typeJson = new JSONObject(typeResponse);
+                                // Cualcular
+                                if (typeDataList.size() == typesArray.length()) {
 
-                                    typeDataList.add(typeJson);
+                                    Map<String, Double> map =
+                                            WeaknessResistancesCalculator.calculate(typeDataList);
 
-                                    // Cuando están todos los tipos
-                                    if (typeDataList.size() == typesArray.length()) {
+                                    WeaknessResistancesResult result =
+                                            WeaknessResistancesCalculator.classify(map);
 
-                                        // Calcular debilidades
-                                        Map<String, Double> map = WeaknessResistancesCalculator.calculate(typeDataList);
-
-                                        //Clasificar el resultado (X4, X2, X1, X0'5, X0,25, X0)
-                                        WeaknessResistancesResult result = WeaknessResistancesCalculator.classify(map);
-
-                                        renderWeaknesses(result); // Mostrar el resultado en pantalla
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    renderWeaknesses(result);
                                 }
-                            },
-                            error -> {}
-                        );
 
-                        queue.add(typeRequest);
-                    }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        },
+                        error -> {}
+                );
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            },
-            error -> {}
-        );
+                queue.add(typeRequest);
+            }
 
-        queue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     //MOSTRAR DEBILIDADES
     private void renderWeaknesses(WeaknessResistancesResult result) {
@@ -368,7 +361,7 @@ public class DetailBattleInfoFragment extends Fragment {
 
     // AÑADIR LINEA DIVISORIA
     private void addDivider() {
-        View divider = new View(requireContext());
+        View divider = new View(getContext());
 
         LinearLayout.LayoutParams params =
             new LinearLayout.LayoutParams(
@@ -387,7 +380,7 @@ public class DetailBattleInfoFragment extends Fragment {
     // CREAR FILAS CON TIPOS POR DEBILIDADES
     private void addTypeRow(String label, List<String> types) {
 
-        LinearLayout row = new LinearLayout(requireContext());
+        LinearLayout row = new LinearLayout(getContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
 
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -399,7 +392,7 @@ public class DetailBattleInfoFragment extends Fragment {
         ));
 
         // Añadir icono multiplicador
-        ImageView multiplierIcon = new ImageView(requireContext());
+        ImageView multiplierIcon = new ImageView(getContext());
         multiplierIcon.setImageResource(getMultiplierIcon(label));
         multiplierIcon.setAdjustViewBounds(true);
         multiplierIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -414,7 +407,7 @@ public class DetailBattleInfoFragment extends Fragment {
 
 
         // Crear contenedor de tipos
-        FlexboxLayout iconsLayout = new FlexboxLayout(requireContext());
+        FlexboxLayout iconsLayout = new FlexboxLayout(getContext());
 
         iconsLayout.setFlexWrap(FlexWrap.WRAP);
         iconsLayout.setAlignItems(AlignItems.CENTER);
@@ -429,13 +422,13 @@ public class DetailBattleInfoFragment extends Fragment {
         iconsLayout.setLayoutParams(iconsParams);
 
         if (types.isEmpty()) {
-            TextView none = new TextView(requireContext());
+            TextView none = new TextView(getContext());
             none.setText("Ninguno");
             iconsLayout.addView(none);
         } else {
             // Mostrar iconos de los tipos
             for (String type : types) {
-                ImageView icon = new ImageView(requireContext());
+                ImageView icon = new ImageView(getContext());
 
                 icon.setImageResource(TypeUtils.getTypeIcon(type));
                 icon.setAdjustViewBounds(true);
@@ -480,14 +473,15 @@ public class DetailBattleInfoFragment extends Fragment {
     // AÑADIR FILA POR MOVIMIENTO
     private void addMoveRow(String moveName) {
 
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
-
         String url = "https://pokeapi.co/api/v2/move/" + moveName;
 
         StringRequest request = new StringRequest(
             Request.Method.GET,
             url,
             response -> {
+
+                if (!isAdded()) return;
+
                 try {
                     JSONObject json = new JSONObject(response);
 
@@ -526,12 +520,12 @@ public class DetailBattleInfoFragment extends Fragment {
     // CREAR LAS FILAS
     private void createMoveRow(String moveName, String type, String category) {
 
-        LinearLayout row = new LinearLayout(requireContext());
+        LinearLayout row = new LinearLayout(getContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setPadding(8, 8, 8, 8);
 
         // Icono del tipo
-        ImageView typeIcon = new ImageView(requireContext());
+        ImageView typeIcon = new ImageView(getContext());
         typeIcon.setImageResource(TypeUtils.getTypeIcon(type));
 
         LinearLayout.LayoutParams typeParams =
@@ -543,7 +537,7 @@ public class DetailBattleInfoFragment extends Fragment {
         row.addView(typeIcon);
 
         // Icono de la categoria
-        ImageView categoryIcon = new ImageView(requireContext());
+        ImageView categoryIcon = new ImageView(getContext());
         categoryIcon.setImageResource(getCategoryIcon(category));
 
         LinearLayout.LayoutParams catParams =
@@ -555,7 +549,7 @@ public class DetailBattleInfoFragment extends Fragment {
         row.addView(categoryIcon);
 
         // Nombre del movimiento
-        TextView moveText = new TextView(requireContext());
+        TextView moveText = new TextView(getContext());
         moveText.setText(formatMoveName(moveName));
         moveText.setTextSize(16);
 
