@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.eonnav.pokedex.PokedexFragment;
+import com.example.eonnav.teams.TeamsFragment;
 
 public class MainPagerAdapter extends FragmentStateAdapter {
 
@@ -22,7 +23,7 @@ public class MainPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new MenuFragment();
             case 2:
-                return new FavoritesFragment();
+                return new TeamsFragment();
             default:
                 return new MenuFragment();
         }

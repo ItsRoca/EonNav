@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Buscador -->
+    <EditText
+        android:id="@+id/teamSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Búsqueda"
+        android:padding="12dp"
+        android:background="@drawable/search_background"
+        android:elevation="4dp"
+        android:textColor="@color/black"
+        android:layout_margin="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/filterButton"/>
+
+    <!-- Lista equipos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTeams"
+        android:layout_width="match_parent"
+        android:layout_height="666dp"
+        android:layout_marginBottom="-86dp"
+        android:layout_weight="1" />
+
+    <!-- Botón nuevo equipo -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCreateTeam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="16dp"
+        android:src="@drawable/icon_add"
+        app:maxImageSize="100dp"
+        app:tint="@android:color/holo_purple"/>
+
+</LinearLayout>

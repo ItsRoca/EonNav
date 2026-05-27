@@ -12,8 +12,8 @@
         android:icon="@drawable/icon_pokeball"/>
 
     <item
-        android:id="@+id/nav_favorites"
-        android:title="Favoritos"
-        android:icon="@drawable/filled_star"/>
+        android:id="@+id/nav_teams"
+        android:title="Teams"
+        android:icon="@drawable/icon_teams" />
 
 </menu>

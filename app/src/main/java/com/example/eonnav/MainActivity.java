@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(1, true);
                 return true;
             }
-            if (id == R.id.nav_favorites) {
+            if (id == R.id.nav_teams) {
                 viewPager.setCurrentItem(2, true);
                 return true;
             }
@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Actualiza el BottomNavigation al cambiar entre fragments
         viewPager.registerOnPageChangeCallback(
-                new ViewPager2.OnPageChangeCallback() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        super.onPageSelected(position);
-                        bottomNav.getMenu().getItem(position).setChecked(true);
-                    }
+            new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    bottomNav.getMenu().getItem(position).setChecked(true);
                 }
+            }
         );
 
         // Pagina inicial

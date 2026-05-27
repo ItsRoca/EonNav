@@ -26,7 +26,7 @@
         android:padding="12dp"
         android:textSize="16sp"
         android:textColor="#000"
-        android:background="@drawable/filter_button_bg"/>
+        android:background="@drawable/filter_button_background"/>
 
     <Button
         android:id="@+id/applyFilters"

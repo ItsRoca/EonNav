@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="Team Builder"
+        app:titleTextColor="@android:color/white" />
+
+    <!-- Nombre -->
+    <EditText
+        android:id="@+id/etTeamName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del equipo"
+        android:padding="12dp"/>
+
+    <!-- Slots pokemon -->
+    <GridLayout android:id="@+id/teamGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:layout_margin="16dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <ImageView
+            android:id="@+id/pokemon1"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+        <ImageView
+            android:id="@+id/pokemon2"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+        <ImageView
+            android:id="@+id/pokemon3"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+        <ImageView
+            android:id="@+id/pokemon4"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+        <ImageView
+            android:id="@+id/pokemon5"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+        <ImageView
+            android:id="@+id/pokemon6"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_margin="8dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/circle"
+            android:src="@drawable/icon_pokeball_2"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:padding="16dp"/>
+
+    </GridLayout>
+
+    <!-- Boton eliminar -->
+    <Button
+        android:id="@+id/btnDeleteTeam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Eliminar equipo"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:layout_margin="16dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
