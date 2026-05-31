@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/ESTADO-EN%20DESARROLLO-green">
 </p>
 
-![GitHub Org's stars](https://img.shields.io/github/stars/itsRoca?style=social)
+![GitHub Org's stars](https://img.shields.io/github/stars/ItsRoca?tab=stars)
 
 <p align="center">
 Aplicación Android para centralizar herramientas relacionadas con Pokémon.
