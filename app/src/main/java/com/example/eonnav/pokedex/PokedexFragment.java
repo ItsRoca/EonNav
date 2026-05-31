@@ -363,7 +363,7 @@ public class PokedexFragment extends Fragment {
     // FILTRO DE FAVORITOS
     private void loadFavorites(Runnable onFinished) {
 
-        String url = "http://192.168.42.126:8000/api/favorites/?user_id=1";
+        String url = "http://10.0.2.2:8000/api/favorites/?user_id=1";
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,

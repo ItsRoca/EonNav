@@ -37,7 +37,7 @@ public class DetailDescriptionFragment extends Fragment {
     private RequestQueue queue;
 
     private static final String POKEMON_URL = "https://pokeapi.co/api/v2/pokemon/";
-    private static final String FAVORITES_URL = "http://192.168.42.126:8000/api/favorites/";
+    private static final String FAVORITES_URL = "http://10.0.2.2:8000/api/favorites/";
 
 
     public DetailDescriptionFragment() {}
@@ -87,7 +87,7 @@ public class DetailDescriptionFragment extends Fragment {
             boolean[] isFav = {false};   // usamos array para poder cambiarlo dentro del lambda
             int[] favId = {-1};          // guardar ID del favorito
 
-            String urlGet = "http://192.168.42.126:8000/api/favorites/?user_id=1";
+            String urlGet = "http://10.0.2.2:8000/api/favorites/?user_id=1";
 
             StringRequest getRequest = new StringRequest(
                 Request.Method.GET,
@@ -230,7 +230,7 @@ public class DetailDescriptionFragment extends Fragment {
                 if (isFav[0]) {
 
                     // DELETE FAVORITES
-                    String urlDelete = "http://192.168.42.126:8000/api/favorites/?id=" + favId[0];
+                    String urlDelete = "http://10.0.2.2:8000/api/favorites/?id=" + favId[0];
 
                     StringRequest deleteRequest = new StringRequest(
                         Request.Method.DELETE,
